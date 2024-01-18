@@ -1,0 +1,12 @@
+from sqlalchemy import Column, ForeignKey, Integer, String
+from app.database import Base
+# from menu.models import Menu
+
+
+class Submenu(Base):
+    __tablename__ = "submenu"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    menu_id = Column(ForeignKey("menu.id"), nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
