@@ -1,6 +1,8 @@
 from sqlalchemy import DECIMAL, UUID, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
+
 from app.database import Base
+from app.submenu.models import Submenu
 
 
 class Dish(Base):

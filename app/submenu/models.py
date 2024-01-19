@@ -1,6 +1,8 @@
 from sqlalchemy import UUID, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
+
 from app.database import Base
+# from app.menu.models import Menu
 
 
 class Submenu(Base):
