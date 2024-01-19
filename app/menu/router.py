@@ -16,6 +16,6 @@ async def get_menus() -> list[SMenus]:
     return await MenuDAO.get_all()
 
 
-@router.get("/{model_id}", response_model=SMenus)
-async def get_menu_by_id(model_id: UUID4):
-    return await MenuDAO.get_by_id(model_id=model_id)
+@router.get("/{target_menu_id}")
+async def get_menu_by_id(target_menu_id: UUID4) -> SMenus | None:
+    return await MenuDAO.get_by_id(id=target_menu_id)
