@@ -13,6 +13,7 @@ from app.config import settings
 from app.database import Base
 from app.menu.models import Menu
 from app.submenu.models import Submenu
+from app.dish.models import Dish
 
 
 # this is the Alembic Config object, which provides
