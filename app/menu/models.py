@@ -14,6 +14,6 @@ class Menu(Base):
     submenus_count = column_property(
         select(func.count(Submenu.id)).where(Submenu.menu_id == id).scalar_subquery()
     )
-    dishes_count = column_property(select(Submenu.dishes_count))
+    dishes_count = column_property(select(Submenu.dishes_count).scalar_subquery())
 
     submenus = relationship("Submenu", back_populates="menu")

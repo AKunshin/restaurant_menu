@@ -18,3 +18,11 @@ class BaseDAO:
             query = select(cls.model).filter_by(**filter_by)
             result = await session.execute(query)
             return result.scalar_one_or_none()
+        
+    @classmethod
+    async def add(cls, insert_values):
+        async with async_session_maker() as session:
+            query = insert(cls.model).values(insert_values)
+            result = await session.execute(query)
+            session.commit()
+            return result
