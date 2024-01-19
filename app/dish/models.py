@@ -2,7 +2,6 @@ from sqlalchemy import DECIMAL, UUID, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from app.database import Base
-from app.submenu.models import Submenu
 
 
 class Dish(Base):
@@ -14,4 +13,4 @@ class Dish(Base):
     price = Column(DECIMAL, nullable=False)
     submenu_id = Column(UUID, ForeignKey("submenus.id"))
 
-    menu = relationship("Submenu", back_populates="dishes")
+    submenu = relationship("Submenu", back_populates="dishes")
