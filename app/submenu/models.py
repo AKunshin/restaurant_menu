@@ -1,13 +1,14 @@
-from sqlalchemy import Column, String, UUID
+from sqlalchemy import UUID, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 from app.database import Base
 
 
-class Menu(Base):
-    __tablename__ = "menus"
+class Submenu(Base):
+    __tablename__ = "submenus"
 
     id = Column(UUID, primary_key=True, index=True, nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
+    menu_id = Column(UUID, ForeignKey("menus.id"))
 
-    submenus = relationship("Submenu", back_populates="menu")
+    menu = relationship("Menu", back_populates="submenus")
