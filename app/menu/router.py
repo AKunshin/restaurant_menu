@@ -36,15 +36,13 @@ async def add_menu(new_menu: SMenuCreate):
 
 @router.patch("/{target_menu_id}", response_model=SMenu | None)
 async def update_menu(target_menu_id: UUID4, menu_update: SMenuUpdate | SMenuUpdatePartial):
-    logger.debug(menu_update)
     update_values = menu_update.model_dump()
-    logger.debug(update_values)
-    updated_menu = await MenuDAO.update_item(target_menu_id, update_values)
+    updated_menu = await MenuDAO.update_item(update_values, id=target_menu_id)
     return updated_menu
 
 @router.delete("/{target_menu_id}")
 async def delete_menu(target_menu_id: UUID4):
-    is_menu_deleted = await MenuDAO.delete_item(target_menu_id)
+    is_menu_deleted = await MenuDAO.delete_item(id=target_menu_id)
     if not is_menu_deleted:
         raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,

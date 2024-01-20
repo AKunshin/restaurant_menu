@@ -8,6 +8,7 @@ from app.database import async_session_maker
 class BaseDAO:
     model = None
 
+
     @classmethod
     async def get_all(cls, **filter_by):
         async with async_session_maker() as session:
@@ -32,23 +33,28 @@ class BaseDAO:
             return new_item
 
     @classmethod
-    async def update_item(cls, item_id, update_values):
+    async def update_item(cls, update_values, **filter_by):
         async with async_session_maker() as session:
-            stmt = (
-                update(cls.model)
-                .where(cls.model.id == item_id)
-                .values(**update_values)
-            )
-            await session.execute(stmt)
-            updated_item = await session.get(cls.model, item_id)
+            # Пока не работает
+            # stmt = (
+            #     update(cls.model)
+            #     .where(**search_values)
+            #     .values(**update_values)
+            # )
+            # updated_item = await session.get(cls.model, item_id)
+            stmt = select(cls.model).filter_by(**filter_by)
+            await session.execute(stmt.update(**update_values))
             await session.commit()
-            await session.refresh(updated_item)
-            return updated_item
+            query = select(cls.model).filter_by(**filter_by)
+            result = await session.execute(query)
+            return result.scalars()
 
     @classmethod
-    async def delete_item(cls, item_id):
+    async def delete_item(cls, **filter_by):
         async with async_session_maker() as session:
-            deleting_item = await session.get(cls.model, item_id)
+            query = select(cls.model).filter_by(**filter_by)
+            result = await session.execute(query)
+            deleting_item = result.scalar_one_or_none()
             if deleting_item:
                 await session.delete(deleting_item)
                 await session.commit()

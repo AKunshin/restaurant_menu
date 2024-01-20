@@ -46,16 +46,20 @@ async def update_menu(
     submenu_update: SSubmmenuUpdate | SSubmmenuUpdatePartial,
 ):
     update_values = submenu_update.model_dump()
+    update_values.update(menu_id=target_menu_id)
     updated_submenu = await SubmenuDAO.update_item(
-        target_menu_id, target_submenu_id, update_values
+        update_values, menu_id=target_menu_id, id=target_submenu_id
     )
     return updated_submenu
 
 
 @router.delete("/{target_menu_id}/submenus/{target_submenu_id}")
-async def delete_menu(target_submenu_id: UUID4):
-    is_menu_deleted = await SubmenuDAO.delete_item(target_submenu_id)
+async def delete_menu(target_menu_id: UUID4, target_submenu_id: UUID4):
+    is_menu_deleted = await SubmenuDAO.delete_item(
+        menu_id=target_menu_id, id=target_submenu_id
+    )
     if not is_menu_deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
         )
+    return {"status": "true", "message": "The submenu has been deleted"}
