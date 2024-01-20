@@ -2,13 +2,14 @@ from pydantic import UUID4, BaseModel
 
 
 class SSubmenuBase(BaseModel):
-    id: UUID4
-
-
-class SSubmenuCreate(SSubmenuBase):
     title: str
     description: str
 
 
+class SSubmenuCreate(SSubmenuBase):
+    pass
+
+
 class SSubmenus(SSubmenuCreate):
+    id: UUID4
     dishes_count: int = 0

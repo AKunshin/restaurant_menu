@@ -1,4 +1,4 @@
-from sqlalchemy import insert, select
+from sqlalchemy import Result, insert, select
 from loguru import logger
 
 from app.database import async_session_maker
@@ -23,8 +23,11 @@ class BaseDAO:
     @classmethod
     async def add(cls, insert_values):
         async with async_session_maker() as session:
-            logger.debug(insert_values)
-            query = insert(cls.model).values(insert_values)
-            result = await session.execute(query)
+            new_item = cls.model(**insert_values)
+            session.add(new_item)
             await session.commit()
-            return result.scalar()
+            return new_item
+            # query = insert(cls.model).values(insert_values)
+            # result  = await session.execute(query)
+            # await session.commit()
+            # return result.scalar()

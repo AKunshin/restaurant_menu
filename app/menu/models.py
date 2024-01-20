@@ -9,7 +9,7 @@ from app.submenu.models import Submenu
 class Menu(Base):
     __tablename__ = "menus"
 
-    id = Column(UUID, primary_key=True, default=uuid.uuid4, index=True, nullable=False)
+    id = Column(UUID, default=uuid.uuid4, primary_key=True, index=True, nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     submenus_count = column_property(

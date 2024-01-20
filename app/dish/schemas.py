@@ -3,10 +3,6 @@ from decimal import Decimal
 
 
 class SDishBase(BaseModel):
-    id: UUID4
-
-
-class SDish(SDishBase):
     title: str
     description: str
     price: Decimal
@@ -14,3 +10,11 @@ class SDish(SDishBase):
     @validator("price", pre=True)
     def round_for_two_digits(cls, v):
         return Decimal(v).quantize(Decimal("1.00"))
+
+
+class SDishCreate(SDishBase):
+    pass
+
+
+class SDish(SDishBase):
+    id: UUID4
