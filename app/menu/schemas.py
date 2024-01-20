@@ -2,11 +2,11 @@ from pydantic import UUID4, BaseModel
 
 
 class SMenuBase(BaseModel):
-    pass
-
-class SMenuCreate(SMenuBase):
     title: str
     description: str
+
+class SMenuCreate(SMenuBase):
+    pass
 
 
 class SMenus(SMenuCreate):
