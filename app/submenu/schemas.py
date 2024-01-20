@@ -10,9 +10,17 @@ class SSubmenuCreate(SSubmenuBase):
     pass
 
 
-class SSubmenus(SSubmenuCreate):
+class SSubmmenuUpdate(SSubmenuCreate):
+    pass
+
+
+class SSubmmenuUpdatePartial(SSubmenuCreate):
+    title: str | None = None
+    description: str | None = None
+
+
+class SSubmenu(SSubmenuCreate):
     id: UUID4
     dishes_count: int = 0
 
     model_config = ConfigDict(from_attributes=True)
-
