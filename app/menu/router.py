@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
+from loguru import logger
 from pydantic import UUID4
 
 
@@ -35,7 +36,10 @@ async def add_menu(new_menu: SMenuCreate):
 
 @router.patch("/{target_menu_id}", response_model=SMenu | None)
 async def update_menu(target_menu_id: UUID4, menu_update: SMenuUpdate | SMenuUpdatePartial):
-    updated_menu = await MenuDAO.update_item(update_values=menu_update, id=target_menu_id)
+    logger.debug(menu_update)
+    update_values = menu_update.model_dump()
+    logger.debug(update_values)
+    updated_menu = await MenuDAO.update_item(target_menu_id, update_values)
     return updated_menu
 
 @router.delete("/{target_menu_id}")

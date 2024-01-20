@@ -1,3 +1,4 @@
+from loguru import logger
 from sqlalchemy import select, insert, delete, update
 from fastapi import APIRouter, HTTPException, status
 
@@ -31,28 +32,15 @@ class BaseDAO:
             return new_item
 
     @classmethod
-    async def update_item(cls, update_values, **filter_by):
+    async def update_item(cls, item_id, update_values):
         async with async_session_maker() as session:
-            # stmt = update(cls.model).values(update_values).where(**filter_by)
-            # updated_item = await session.execute(stmt)
-            # return updated_item
-
-
-            query = select(cls.model).filter_by(**filter_by)
-            updated_item = await session.execute(query)
-            # TODO
-            query = select(cls.model).filter_by(**filter_by)
-            result = await session.execute(query)
-            deleting_item = result.scalar_one_or_none()
-            if deleting_item:
-                await session.delete(deleting_item)
-                await session.commit()
-                return True
-            else:
-                return False
-            
-            for name, value in update_values.model_dump(exclude_unset=partial).items():
-                setattr(updated_item, name, value)
+            stmt = (
+                update(cls.model)
+                .where(cls.model.id == item_id)
+                .values(**update_values)
+            )
+            await session.execute(stmt)
+            updated_item = await session.get(cls.model, item_id)
             await session.commit()
             await session.refresh(updated_item)
             return updated_item
