@@ -28,4 +28,4 @@ async def get_menu_by_id(target_menu_id: UUID4) -> SMenus | None:
 @router.post("", status_code=201, response_model=SMenus)
 async def add_menu(new_menu: SMenuCreate):
     data = new_menu.model_dump()
-    return await MenuDAO.add(data)
+    return await MenuDAO.add_item(data)
