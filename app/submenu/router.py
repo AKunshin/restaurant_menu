@@ -32,7 +32,7 @@ async def get_submenu_by_id(submenu: Submenu = Depends(get_submenu)):
 
 
 @router.post(
-    "/{target_menu_id}/submenus/",
+    "/{target_menu_id}/submenus",
     status_code=status.HTTP_201_CREATED,
     response_model=SSubmenu,
 )

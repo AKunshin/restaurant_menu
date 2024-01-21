@@ -32,7 +32,7 @@ async def get_dish_by_id(dish: Dish = Depends(get_dish)):
 
 
 @router.post(
-    "/{target_menu_id}/submenus/{target_submenu_id}/dishes/",
+    "/{target_menu_id}/submenus/{target_submenu_id}/dishes",
     status_code=status.HTTP_201_CREATED,
     response_model=SDish,
 )
