@@ -1,13 +1,11 @@
 from loguru import logger
-from sqlalchemy import select, insert, delete, update
-from fastapi import APIRouter, HTTPException, status
+from sqlalchemy import select, delete
 
 from app.database import async_session_maker
 
 
 class BaseDAO:
     model = None
-
 
     @classmethod
     async def get_all(cls, **filter_by):
@@ -33,32 +31,22 @@ class BaseDAO:
             return new_item
 
     @classmethod
-    async def update_item(cls, update_values, **filter_by):
+    async def update_item(cls, update_values: dict, **filter_by):
         async with async_session_maker() as session:
-            # Пока не работает
-            # stmt = (
-            #     update(cls.model)
-            #     .where(**search_values)
-            #     .values(**update_values)
-            # )
-            # updated_item = await session.get(cls.model, item_id)
-            stmt = select(cls.model).filter_by(**filter_by)
-            await session.execute(stmt.update(**update_values))
+            updating_item = await cls.get_by_id(**filter_by)
+            for name, value in update_values.items():
+                setattr(updating_item, name, value)
             await session.commit()
-            query = select(cls.model).filter_by(**filter_by)
-            result = await session.execute(query)
-            return result.scalars()
+            # await session.refresh(updating_item)
+            return updating_item
 
     @classmethod
     async def delete_item(cls, **filter_by):
         async with async_session_maker() as session:
-            query = select(cls.model).filter_by(**filter_by)
-            result = await session.execute(query)
-            deleting_item = result.scalar_one_or_none()
+            deleting_item = await cls.get_by_id(**filter_by)
             if deleting_item:
                 await session.delete(deleting_item)
                 await session.commit()
                 return True
             else:
                 return False
-            
