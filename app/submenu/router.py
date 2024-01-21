@@ -1,6 +1,6 @@
-from typing import Annotated
-from fastapi import APIRouter, Depends, Path, status
-from pydantic import UUID4
+from fastapi import APIRouter, Depends, status
+from app.menu.dependencies import get_menu
+from app.menu.models import Menu
 
 
 from app.submenu.dao import SubmenuDAO
@@ -19,9 +19,9 @@ router = APIRouter(
 
 
 @router.get("/{target_menu_id}/submenus", response_model=list[SSubmenu])
-async def get_submenus_for_menu(target_menu_id: Annotated[UUID4, Path]):
+async def get_submenus_for_menu(menu: Menu = Depends(get_menu)):
     """Получение списка всех подменю для определенного меню"""
-    result = await SubmenuDAO.get_all(menu_id=target_menu_id)
+    result = await SubmenuDAO.get_all(menu_id=menu.id)
     return result
 
 
@@ -39,11 +39,12 @@ async def get_submenu_by_id(
     response_model=SSubmenu,
 )
 async def add_submenu(
-    target_menu_id: Annotated[UUID4, Path], new_submenu: SSubmenuCreate
+    new_submenu: SSubmenuCreate,
+    menu: Menu = Depends(get_menu),
 ):
     """Создание нового подменю"""
     data = new_submenu.model_dump()
-    data.update(menu_id=target_menu_id)
+    data.update(menu_id=menu.id)
     return await SubmenuDAO.add_item(data)
 
 
