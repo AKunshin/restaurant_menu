@@ -4,17 +4,19 @@ from pydantic import UUID4
 
 
 from app.dish.dao import DishDAO
-from app.dish.schemas import SDish
+from app.dish.schemas import SDish, SDishCreate, SDishUpdate, SDishUpdatePartial
 
 router = APIRouter(
-    prefix="/menus/{target_menu_id}/submenus/{target_submenu_id}/dishes",
+    prefix="/dishes",
     tags=["Блюдо"],
 )
 
 
-@router.get("")
-async def get_dishes() -> list[SDish]:
-    return await DishDAO.get_all()
+@router.get("/{target_menu_id}/submenus/{target_submenu_id}")
+async def get_dishes(
+    target_menu_id: Annotated[UUID4, Path], target_submenu_id: Annotated[UUID4, Path]
+) -> list[SDish]:
+    return await DishDAO.get_all(submenu_id=target_submenu_id)
 
 
 @router.get("/{model_id}", response_model=SDish)
