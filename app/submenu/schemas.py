@@ -1,14 +1,26 @@
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, BaseModel, ConfigDict
 
 
 class SSubmenuBase(BaseModel):
-    id: UUID4
-
-
-class SSubmenuCreate(SSubmenuBase):
     title: str
     description: str
 
 
-class SSubmenus(SSubmenuCreate):
+class SSubmenuCreate(SSubmenuBase):
+    pass
+
+
+class SSubmmenuUpdate(SSubmenuCreate):
+    pass
+
+
+class SSubmmenuUpdatePartial(SSubmenuCreate):
+    title: str | None = None
+    description: str | None = None
+
+
+class SSubmenu(SSubmenuCreate):
+    id: UUID4
     dishes_count: int = 0
+
+    model_config = ConfigDict(from_attributes=True)

@@ -1,15 +1,25 @@
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, BaseModel, ConfigDict
 
 
 class SMenuBase(BaseModel):
-    id: UUID4
-
-
-class SMenuCreate(SMenuBase):
     title: str
     description: str
 
 
-class SMenus(SMenuCreate):
+class SMenuCreate(SMenuBase):
+    pass
+
+class SMenuUpdate(SMenuCreate):
+    pass
+
+class SMenuUpdatePartial(SMenuCreate):
+    title: str | None = None
+    description: str | None = None
+
+
+class SMenu(SMenuCreate):
+    id: UUID4
     submenus_count: int = 0
     dishes_count: int = 0
+
+    model_config = ConfigDict(from_attributes=True)
