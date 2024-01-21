@@ -53,13 +53,13 @@ async def add_submenu(
     "/{target_menu_id}/submenus/{target_submenu_id}", response_model=SSubmenu | None
 )
 async def update_submenu_partial(
-    target_menu_id: Annotated[UUID4, Path],
-    target_submenu_id: Annotated[UUID4, Path],
     submenu_update: SSubmmenuUpdatePartial,
+    submenu: Submenu = Depends(get_submenu)
 ):
     """Частичное обновление подменю"""
     updated_submenu = await SubmenuDAO.update_item(
-        submenu_update, menu_id=target_menu_id, id=target_submenu_id
+        updating_item=submenu,
+        update_values=submenu_update,
     )
     return updated_submenu
 
