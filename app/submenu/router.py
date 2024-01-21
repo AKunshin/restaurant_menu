@@ -26,9 +26,7 @@ async def get_submenus_for_menu(menu: Menu = Depends(get_menu)):
 
 
 @router.get("/{target_menu_id}/submenus/{target_submenu_id}", response_model=SSubmenu)
-async def get_submenu_by_id(
-    submenu: Submenu = Depends(get_submenu),
-):
+async def get_submenu_by_id(submenu: Submenu = Depends(get_submenu)):
     """Получение определенного подменю"""
     return submenu
 
