@@ -30,26 +30,14 @@ class BaseDAO:
             return new_item
 
     @classmethod
-    async def update_item(cls, update_values: dict, **filter_by):
+    async def update_item(cls, updating_item, update_values):
         async with async_session_maker() as session:
-            updating_item = await cls.get_by_id(**filter_by)
             for name, value in update_values.model_dump(exclude_unset=True).items():
                 setattr(updating_item, name, value)
             session.add(updating_item)
             await session.commit()
             await session.refresh(updating_item)
             return updating_item
-
-    # @classmethod
-    # async def delete_item(cls, **filter_by):
-    #     async with async_session_maker() as session:
-    #         deleting_item = await cls.get_by_id(**filter_by)
-    #         if deleting_item:
-    #             await session.delete(deleting_item)
-    #             await session.commit()
-    #             return True
-    #         else:
-    #             return False
 
     @classmethod
     async def delete_item(cls, item):

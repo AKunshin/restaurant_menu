@@ -36,15 +36,18 @@ async def add_menu(new_menu: SMenuCreate):
 
 @router.patch("/{target_menu_id}", response_model=SMenu)
 async def update_menu(
-    target_menu_id: Annotated[UUID4, Path], menu_update: SMenuUpdatePartial
+    menu_update: SMenuUpdatePartial,
+    menu: Menu = Depends(get_menu),
 ):
     """Частичное или полное обновление полей меню"""
-    updated_menu = await MenuDAO.update_item(menu_update, id=target_menu_id)
+    updated_menu = await MenuDAO.update_item(
+        updating_item=menu, update_values=menu_update
+    )
     return updated_menu
 
 
 @router.delete("/{target_menu_id}")
 async def delete_menu(menu: Menu = Depends(get_menu)):
+    """Удаление меню"""
     await MenuDAO.delete_item(menu)
     return {"status": "true", "message": "The menu has been deleted"}
-
