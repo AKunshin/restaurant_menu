@@ -1,5 +1,4 @@
-from loguru import logger
-from sqlalchemy import select, delete
+from sqlalchemy import select
 
 from app.database import async_session_maker
 
@@ -41,13 +40,19 @@ class BaseDAO:
             await session.refresh(updating_item)
             return updating_item
 
+    # @classmethod
+    # async def delete_item(cls, **filter_by):
+    #     async with async_session_maker() as session:
+    #         deleting_item = await cls.get_by_id(**filter_by)
+    #         if deleting_item:
+    #             await session.delete(deleting_item)
+    #             await session.commit()
+    #             return True
+    #         else:
+    #             return False
+
     @classmethod
-    async def delete_item(cls, **filter_by):
+    async def delete_item(cls, item):
         async with async_session_maker() as session:
-            deleting_item = await cls.get_by_id(**filter_by)
-            if deleting_item:
-                await session.delete(deleting_item)
-                await session.commit()
-                return True
-            else:
-                return False
+            await session.delete(item)
+            await session.commit()
