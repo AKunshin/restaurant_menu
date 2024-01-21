@@ -9,15 +9,17 @@ class SMenuBase(BaseModel):
 class SMenuCreate(SMenuBase):
     pass
 
+
 class SMenuUpdate(SMenuCreate):
     pass
+
 
 class SMenuUpdatePartial(SMenuCreate):
     title: str | None = None
     description: str | None = None
 
 
-class SMenu(SMenuCreate):
+class SMenu(SMenuBase):
     id: UUID4
     submenus_count: int = 0
     dishes_count: int = 0

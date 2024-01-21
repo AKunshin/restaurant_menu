@@ -1,6 +1,4 @@
-from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Path, status
-from pydantic import UUID4
+from fastapi import APIRouter, Depends, status
 
 
 from app.menu.dao import MenuDAO
