@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Depends, Path, status
 from pydantic import UUID4
 
 
@@ -63,17 +63,8 @@ async def update_submenu_partial(
     )
     return updated_submenu
 
-
 @router.delete("/{target_menu_id}/submenus/{target_submenu_id}")
-async def delete_menu(
-    target_menu_id: Annotated[UUID4, Path], target_submenu_id: Annotated[UUID4, Path]
-):
+async def delete_submenu(submenu: Submenu = Depends(get_submenu)):
     """Удаление подменю"""
-    is_menu_deleted = await SubmenuDAO.delete_item(
-        menu_id=target_menu_id, id=target_submenu_id
-    )
-    if not is_menu_deleted:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="submenu not found"
-        )
+    await SubmenuDAO.delete_item(submenu)
     return {"status": "true", "message": "The submenu has been deleted"}

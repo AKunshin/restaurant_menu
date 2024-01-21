@@ -48,13 +48,3 @@ async def delete_menu(menu: Menu = Depends(get_menu)):
     await MenuDAO.delete_item(menu)
     return {"status": "true", "message": "The menu has been deleted"}
 
-
-# @router.delete("/{target_menu_id}")
-# async def delete_menu(menu: Menu = Depends(get_menu)):
-#     """Удаление меню"""
-#     is_menu_deleted = await MenuDAO.delete_item(id=target_menu_id)
-#     if not is_menu_deleted:
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
-#         )
-#     return {"status": "true", "message": "The menu has been deleted"}
