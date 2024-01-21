@@ -3,7 +3,7 @@ version: "3.8"
 services:
   web:
     build: .
-    command: uvicorn app.main:app --reload --host 0.0.0.0
+    command: bash -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --reload"
     volumes:
       - .:/app
     ports:
@@ -22,7 +22,6 @@ services:
       - POSTGRES_USER=$DB_USER
       - POSTGRES_DB=$DB_NAME
       - POSTGRES_PASSWORD=$DB_PASS
-    
     # environment:
     #   - DB_HOST=$DB_HOST
     #   - DB_PORT=$DB_PORT
