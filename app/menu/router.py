@@ -23,7 +23,7 @@ async def get_menus():
 
 @router.get("/{target_menu_id}", response_model=SMenu)
 async def get_menu_by_id(menu: Menu = Depends(get_menu)):
-    """Получение меню по id"""
+    """Получение определенного подменю"""
     return menu
 
 

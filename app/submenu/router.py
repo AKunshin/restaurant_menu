@@ -18,10 +18,8 @@ router = APIRouter(
 )
 
 
-@router.get("/{target_menu_id}/submenus")
-async def get_submenus_for_menu(
-    target_menu_id: Annotated[UUID4, Path]
-) -> list[SSubmenu] | None:
+@router.get("/{target_menu_id}/submenus", response_model=list[SSubmenu])
+async def get_submenus_for_menu(target_menu_id: Annotated[UUID4, Path]):
     """Получение списка всех подменю для определенного меню"""
     result = await SubmenuDAO.get_all(menu_id=target_menu_id)
     return result
@@ -53,8 +51,7 @@ async def add_submenu(
     "/{target_menu_id}/submenus/{target_submenu_id}", response_model=SSubmenu | None
 )
 async def update_submenu_partial(
-    submenu_update: SSubmmenuUpdatePartial,
-    submenu: Submenu = Depends(get_submenu)
+    submenu_update: SSubmmenuUpdatePartial, submenu: Submenu = Depends(get_submenu)
 ):
     """Частичное обновление подменю"""
     updated_submenu = await SubmenuDAO.update_item(
@@ -62,6 +59,7 @@ async def update_submenu_partial(
         update_values=submenu_update,
     )
     return updated_submenu
+
 
 @router.delete("/{target_menu_id}/submenus/{target_submenu_id}")
 async def delete_submenu(submenu: Submenu = Depends(get_submenu)):
