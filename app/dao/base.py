@@ -34,10 +34,11 @@ class BaseDAO:
     async def update_item(cls, update_values: dict, **filter_by):
         async with async_session_maker() as session:
             updating_item = await cls.get_by_id(**filter_by)
-            for name, value in update_values.items():
+            for name, value in update_values.model_dump(exclude_unset=True).items():
                 setattr(updating_item, name, value)
+            session.add(updating_item)
             await session.commit()
-            # await session.refresh(updating_item)
+            await session.refresh(updating_item)
             return updating_item
 
     @classmethod
