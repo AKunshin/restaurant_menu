@@ -9,6 +9,7 @@ class SDishBase(BaseModel):
 
     @validator("price", pre=True)
     def round_for_two_digits(cls, v):
+        """Округление цены до 2-ух цифр после разделителя"""
         return Decimal(v).quantize(Decimal("1.00"))
 
 

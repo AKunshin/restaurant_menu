@@ -19,7 +19,7 @@ class SSubmmenuUpdatePartial(SSubmenuCreate):
     description: str | None = None
 
 
-class SSubmenu(SSubmenuCreate):
+class SSubmenu(SSubmenuBase):
     id: UUID4
     dishes_count: int = 0
 
