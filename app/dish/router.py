@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 @router.get(
-    "/{target_menu_id}/submenus/{target_submenu_id}", response_model=list[SDish]
+    "/{target_menu_id}/submenus/{target_submenu_id}/dishes", response_model=list[SDish]
 )
 async def get_dishes(submenu: Submenu = Depends(get_submenu)):
     """Получение списка блюд для определенного подменю"""
