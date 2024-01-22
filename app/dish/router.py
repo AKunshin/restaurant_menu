@@ -15,14 +15,14 @@ router = APIRouter(
 
 
 @router.get(
-    "/{target_menu_id}/submenus/{target_submenu_id}/dishes", response_model=list[SDish]
-)
+    "/{target_menu_id}/submenus/{target_submenu_id}/dishes",
+    response_model=list[SDish])
 async def get_dishes(submenu: Submenu = Depends(get_submenu_or_empty)):
     """Получение списка блюд для определенного подменю"""
+    result = []
     if submenu is not None:
-        result = await DishDAO.get_all(submenu_id=submenu.id)
-        return list(result)
-    return []
+        result = (list(await DishDAO.get_all(submenu_id=submenu.id)))
+    return result
 
 
 @router.get(
