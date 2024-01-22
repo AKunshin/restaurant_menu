@@ -10,7 +10,7 @@ class Submenu(Base):
     __tablename__ = "submenus"
 
     id = Column(UUID, default=uuid.uuid4, primary_key=True, index=True, nullable=False)
-    title = Column(String, nullable=False)
+    title = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
     dishes_count = column_property(
         select(func.count(Dish.id)).where(Dish.submenu_id == id).scalar_subquery()
