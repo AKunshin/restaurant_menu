@@ -15,6 +15,7 @@ async def get_submenu(
 ) -> Submenu:
     """Получение определенного подменю"""
     logger.debug(f"{target_submenu_id=}")
+    assert target_submenu_id is not None
     if not target_submenu_id:
         submenu = await SubmenuDAO.get_by_id(menu_id=menu.id, id=target_submenu_id)
         if submenu is not None:
