@@ -17,4 +17,4 @@ class Menu(Base):
     )
     dishes_count = column_property(select(Submenu.dishes_count).scalar_subquery())
 
-    submenus = relationship("Submenu", back_populates="menu")
+    submenus = relationship("Submenu", cascade="all, delete-orphan", back_populates="menu")
