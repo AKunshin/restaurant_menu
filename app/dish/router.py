@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 
 
 from app.dish.dao import DishDAO
-from app.dish.dependencies import get_dish
+from app.dish.dependencies import get_dish, get_submenu_or_empty
 from app.dish.models import Dish
 from app.dish.schemas import SDish, SDishCreate, SDishUpdatePartial
 from app.submenu.dependencies import get_submenu
@@ -17,10 +17,12 @@ router = APIRouter(
 @router.get(
     "/{target_menu_id}/submenus/{target_submenu_id}/dishes", response_model=list[SDish]
 )
-async def get_dishes(submenu: Submenu = Depends(get_submenu)):
+async def get_dishes(submenu: Submenu = Depends(get_submenu_or_empty)):
     """Получение списка блюд для определенного подменю"""
-    result = await DishDAO.get_all(submenu_id=submenu.id)
-    return list(result)
+    if submenu is not None:
+        result = await DishDAO.get_all(submenu_id=submenu.id)
+        return list(result)
+    return []
 
 
 @router.get(

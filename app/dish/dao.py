@@ -4,3 +4,4 @@ from app.dish.models import Dish
 
 class DishDAO(BaseDAO):
     model = Dish
+
