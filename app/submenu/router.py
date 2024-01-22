@@ -22,7 +22,7 @@ router = APIRouter(
 async def get_submenus_for_menu(menu: Menu = Depends(get_menu)):
     """Получение списка всех подменю для определенного меню"""
     result = await SubmenuDAO.get_all(menu_id=menu.id)
-    return result
+    return list(result)
 
 
 @router.get("/{target_menu_id}/submenus/{target_submenu_id}", response_model=SSubmenu)

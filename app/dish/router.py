@@ -19,7 +19,8 @@ router = APIRouter(
 )
 async def get_dishes(submenu: Submenu = Depends(get_submenu)):
     """Получение списка блюд для определенного подменю"""
-    return await DishDAO.get_all(submenu_id=submenu.id)
+    result = await DishDAO.get_all(submenu_id=submenu.id)
+    return list(result)
 
 
 @router.get(
