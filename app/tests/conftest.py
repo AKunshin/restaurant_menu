@@ -12,7 +12,7 @@ from app.dish.models import Dish
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def prepare_databse():
+async def prepare_database():
     assert settings.MODE == "TEST"
 
     async with engine.begin() as conn:
@@ -20,22 +20,25 @@ async def prepare_databse():
         await conn.run_sync(Base.metadata.create_all)
 
     def open_mock_json(model: str):
-        with open(f"app/tests/mock_{model}.json", r) as file:
+        with open(f"app/tests/mock_{model}.json", "r") as file:
             return json.load(file)
 
     menus = open_mock_json("menus")
-    submenus = open_mock_json("submenus")
-    dishes = open_mock_json("dishes")
+
+    # submenus = open_mock_json("submenus")
+    # dishes = open_mock_json("dishes")
 
 
     async with async_session_maker() as session:
         add_menus = insert(Menu).values(menus)
-        add_submenus = insert(Submenu).values(submenus)
-        add_dishes = insert(Dish).values(dishes)
+
+        # add_submenus = insert(Submenu).values(submenus)
+        # add_dishes = insert(Dish).values(dishes)
 
         await session.execute(add_menus)
-        await session.execute(add_submenus)
-        await session.execute(add_dishes)
+
+        # await session.execute(add_submenus)
+        # await session.execute(add_dishes)
 
         await session.commit()
 
