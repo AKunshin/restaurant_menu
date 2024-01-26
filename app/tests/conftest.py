@@ -1,8 +1,10 @@
 import asyncio
 import json
+from httpx import AsyncClient
 import pytest
 from sqlalchemy import insert
 
+from app.main import app as fastapi_app
 from app.config import settings
 from app.database import Base, async_session_maker, engine
 
@@ -28,7 +30,6 @@ async def prepare_database():
     # submenus = open_mock_json("submenus")
     # dishes = open_mock_json("dishes")
 
-
     async with async_session_maker() as session:
         add_menus = insert(Menu).values(menus)
 
@@ -48,3 +49,15 @@ def event_loop(request):
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
+
+
+@pytest.fixture(scope="function")
+async def ac():
+    async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+        yield ac
+
+
+@pytest.fixture(scope="function")
+async def session_for_test():
+    async with async_session_maker() as session:
+        yield session
