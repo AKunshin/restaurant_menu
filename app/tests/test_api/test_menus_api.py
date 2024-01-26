@@ -1,23 +1,20 @@
 from httpx import AsyncClient
-import pytest
 
+target_menu_id = None
 
-@pytest.mark.parametrize("title, description, status_code", [
-    ("Menu 1 title", "Menu 1 description", 201),
-])
-async def test_add_menu(title, description, status_code, ac: AsyncClient):
+async def test_add_menu(ac: AsyncClient):
     response = await ac.post(
         "/menus",
         json={
-            "title": title,
-            "description": description,
+            "title": "Menu 1 title",
+            "description": "Menu 1 description",
         },
     )
-    assert response.status_code == status_code, "Меню не было создано"
+    assert response.status_code == 201, "Меню не было создано"
     assert "id" in response.json()
-    assert response.json()["title"] == title
-    assert response.json()["description"] == description
-
+    assert response.json()["title"] == "Menu 1 title"
+    assert response.json()["description"] == "Menu 1 description"
+    global target_menu_id
     target_menu_id = response.json()["id"]
 
 
