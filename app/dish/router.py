@@ -53,7 +53,7 @@ async def add_dish(
     "/{target_menu_id}/submenus/{target_submenu_id}/dishes/{target_dish_id}",
     response_model=SDishUpdatePartial,
 )
-async def update_submenu_partial(
+async def update_dish(
     dish_update: SDishUpdatePartial, dish: Dish = Depends(get_dish)
 ):
     """Частичное обновление блюда"""
@@ -65,7 +65,7 @@ async def update_submenu_partial(
 
 
 @router.delete("/{target_menu_id}/submenus/{target_submenu_id}/dishes/{target_dish_id}")
-async def delete_submenu(dish: Dish = Depends(get_dish)):
+async def delete_dish(dish: Dish = Depends(get_dish)):
     """Удаление блюда"""
     await DishDAO.delete_item(dish)
     return {"status": "true", "message": "The dish has been deleted"}
