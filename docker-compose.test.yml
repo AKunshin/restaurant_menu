@@ -3,6 +3,7 @@ version: "3.8"
 services:
   ylab_db_test:
     container_name: ylab_db_test
+    hostname: ylab_db_test
     image: postgres:15.1-alpine
     restart: "unless-stopped"
     ports:
@@ -10,9 +11,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=test_db_username
-      - POSTGRES_DB=test_db_name
-      - POSTGRES_PASSWORD=test_db_user_password
+      - POSTGRES_USER=${TEST_DB_USER}
+      - POSTGRES_DB=${TEST_DB_NAME}
+      - POSTGRES_PASSWORD=${TEST_DB_PASS}
     healthcheck:
       test:
         [
@@ -32,7 +33,6 @@ services:
     command: ["pytest", "-v", "-s"]
     volumes:
       - .:/app
-    network_mode: host
     ports:
       - 8000:8000
     depends_on:

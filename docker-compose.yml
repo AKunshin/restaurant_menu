@@ -3,6 +3,7 @@ version: "3.8"
 services:
   ylab_db:
     container_name: ylab_db
+    hostname: ylab_db
     image: postgres:15.1-alpine
     restart: "unless-stopped"
     ports:
@@ -10,9 +11,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=$DB_USER
-      - POSTGRES_DB=$DB_NAME
-      - POSTGRES_PASSWORD=$DB_PASS
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASS}
     healthcheck:
       test:
         [
@@ -33,7 +34,6 @@ services:
     command: bash -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --reload"
     volumes:
       - .:/app
-    network_mode: host
     ports:
       - 8000:8000
     depends_on:
