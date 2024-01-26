@@ -36,7 +36,7 @@ async def test_get_submenu_by_id(ac: AsyncClient):
     response = await ac.get(
         f"/menus/{target_menu_id}/submenus/{target_submenu_id}"
     )
-    assert response.status_code == 200, "Такого меню нет"
+    assert response.status_code == 200, "Такого подменю нет"
     assert response.json()["id"] == target_submenu_id
     assert response.json()["title"] == "Submenu 1 title"
     assert response.json()["description"] == "Submenu 1 description"
