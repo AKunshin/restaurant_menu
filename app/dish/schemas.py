@@ -1,4 +1,4 @@
-from pydantic import UUID4, BaseModel, ConfigDict, validator
+from pydantic import UUID4, BaseModel, ConfigDict, field_validator
 from decimal import Decimal
 
 
@@ -7,7 +7,8 @@ class SDishBase(BaseModel):
     description: str
     price: Decimal
 
-    @validator("price", pre=True)
+    @field_validator("price", mode="before")
+    @classmethod
     def round_for_two_digits(cls, v):
         """Округление цены до 2-ух цифр после разделителя"""
         return Decimal(v).quantize(Decimal("1.00"))
@@ -26,7 +27,8 @@ class SDishUpdatePartial(SDishCreate):
     description: str | None = None
     price: Decimal | None = None
 
-    @validator("price", pre=True)
+    @field_validator("price", mode="before")
+    @classmethod
     def round_for_two_digits(cls, v):
         return Decimal(v).quantize(Decimal("1.00"))
 
