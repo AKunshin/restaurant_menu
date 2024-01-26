@@ -1,8 +1,7 @@
 import asyncio
-import json
+from typing import Any
 from httpx import AsyncClient
 import pytest
-from sqlalchemy import insert
 
 from app.main import app as fastapi_app
 from app.config import settings
@@ -18,30 +17,8 @@ async def prepare_database():
     assert settings.MODE == "TEST"
 
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
-
-    def open_mock_json(model: str):
-        with open(f"app/tests/mock_{model}.json", "r") as file:
-            return json.load(file)
-
-    menus = open_mock_json("menus")
-
-    # submenus = open_mock_json("submenus")
-    # dishes = open_mock_json("dishes")
-
-    async with async_session_maker() as session:
-        add_menus = insert(Menu).values(menus)
-
-        # add_submenus = insert(Submenu).values(submenus)
-        # add_dishes = insert(Dish).values(dishes)
-
-        await session.execute(add_menus)
-
-        # await session.execute(add_submenus)
-        # await session.execute(add_dishes)
-
-        await session.commit()
+        await conn.run_sync(Base.metadata.drop_all)
 
 
 @pytest.fixture(scope="session")
@@ -61,3 +38,51 @@ async def ac():
 async def session_for_test():
     async with async_session_maker() as session:
         yield session
+
+
+# Remove if unuse
+@pytest.fixture(scope="module")
+async def save_data() -> dict[str, Any]:
+    data = {}
+    return data
+
+
+@pytest.fixture(scope="module")
+async def get_mock_menu() -> Menu:
+    async with async_session_maker() as session:
+        mock_menu = Menu(
+            title="Mock menu 1 title", description="Mock menu 1 description"
+        )
+        await session.execute(mock_menu)
+        await session.commit()
+        await session.refresh(mock_menu)
+        return mock_menu
+
+
+@pytest.fixture(scope="module")
+async def get_mock_submenu(get_mock_menu) -> Submenu:
+    async with async_session_maker() as session:
+        mock_submenu = Submenu(
+            title="Mock submenu 1 title",
+            description="Mock submenu 1 description",
+            menu_id=get_mock_menu.id,
+        )
+        await session.execute(mock_submenu)
+        await session.commit()
+        await session.refresh(mock_submenu)
+        return mock_submenu
+
+
+@pytest.fixture(scope="module")
+async def get_dish_submenu(get_mock_submenu) -> Dish:
+    async with async_session_maker() as session:
+        mock_dish = Dish(
+            title="Mock dish 1 title",
+            description="Mock dish 1 description",
+            price=15.99,
+            submenu_id=get_mock_submenu.id,
+        )
+        await session.execute(mock_dish)
+        await session.commit()
+        await session.refresh(mock_dish)
+        return mock_dish

@@ -1,63 +1,49 @@
 from httpx import AsyncClient
 
-target_menu_id = None
-target_submenu_id = None
 
-async def test_add_menu(ac: AsyncClient):
+
+async def test_add_submenu(ac: AsyncClient, get_mock_menu):
     response = await ac.post(
-        "/menus",
-        json={
-            "title": "Menu 1 title",
-            "description": "Menu 1 description",
-        },
-    )
-    assert response.status_code == 201, "Меню не было создано"
-    global target_menu_id
-    target_menu_id = response.json()["id"]
-
-
-async def test_add_submenu(ac: AsyncClient):
-    response = await ac.post(
-        f"/menus/{target_menu_id}/submenus",
+        f"/menus/{get_mock_menu.id}/submenus",
         json={
             "title": "Submenu 1 title",
             "description": "Submenu 1 description",
         },
     )
     assert response.status_code == 201, "Подменю не было создано"
-    assert "id" in response.json()
+    assert response.json()["id"] == get_mock_menu.id
     assert response.json()["title"] == "Submenu 1 title"
     assert response.json()["description"] == "Submenu 1 description"
-    global target_submenu_id
-    target_submenu_id = response.json()["id"]
 
 
-async def test_get_submenu_by_id(ac: AsyncClient):
+async def test_get_submenu_by_id(ac: AsyncClient, get_mock_menu, get_mock_submenu):
     response = await ac.get(
-        f"/menus/{target_menu_id}/submenus/{target_submenu_id}"
+        f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}"
     )
     assert response.status_code == 200, "Такого подменю нет"
-    assert response.json()["id"] == target_submenu_id
-    assert response.json()["title"] == "Submenu 1 title"
-    assert response.json()["description"] == "Submenu 1 description"
+    assert response.json()["id"] == get_mock_submenu.id
+    assert response.json()["title"] == get_mock_submenu.title
+    assert response.json()["description"] == get_mock_submenu.description
 
 
-async def test_update_menu(ac: AsyncClient):
+async def test_update_menu(ac: AsyncClient, get_mock_menu, get_mock_submenu):
     response = await ac.patch(
-        f"/menus/{target_menu_id}/submenus/{target_submenu_id}",
+        f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}",
         json={
             "title": "Updated Submenu 1 title",
             "description": "Updated Submenu 1 description",
         },
     )
     assert response.status_code == 200, "Обновление подменю не выполнено"
-    assert response.json()["id"] == target_submenu_id
+    assert response.json()["id"] == get_mock_submenu.id
     assert response.json()["title"] == "Updated Submenu 1 title"
     assert response.json()["description"] == "Updated Submenu 1 description"
 
 
-async def test_delete_menu(ac: AsyncClient):
-    response = await ac.delete(f"/menus/{target_menu_id}/submenus/{target_submenu_id}")
+async def test_delete_menu(ac: AsyncClient, get_mock_menu, get_mock_submenu):
+    response = await ac.delete(
+        f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}"
+    )
     assert response.status_code == 200, "Удаление подменю не выполнено"
     assert response.json()["status"] == "true"
     assert response.json()["message"] == "The submenu has been deleted"
