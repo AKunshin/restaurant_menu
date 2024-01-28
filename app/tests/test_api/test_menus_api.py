@@ -35,9 +35,15 @@ async def test_update_menu(ac: AsyncClient, get_mock_menu):
     assert response.json()["title"] == "Updated mock menu 1 title"
     assert response.json()["description"] == "Updated mock menu 1 description"
 
-@pytest.mark.skip
-async def test_delete_menu(ac: AsyncClient, get_mock_menu):
-    response = await ac.delete(f"/menus/{get_mock_menu.id}")
+
+async def test_delete_menu(ac: AsyncClient, get_mock_menu_for_test_delete):
+    response = await ac.delete(f"/menus/{get_mock_menu_for_test_delete.id}")
     assert response.status_code == 200, "Удаление меню не выполнено"
     assert response.json()["status"] == "true"
     assert response.json()["message"] == "The menu has been deleted"
+
+
+async def test_get_removed_menu(ac: AsyncClient, get_mock_menu_for_test_delete):
+    response = await ac.get(f"/menus/{get_mock_menu_for_test_delete.id}")
+    assert response.status_code == 404, "Меню, которое должно было быть удалено, все еще существует"
+

@@ -3,6 +3,7 @@ from typing import Any
 from httpx import AsyncClient
 from loguru import logger
 import pytest
+from sqlalchemy import select
 
 from app.main import app as fastapi_app
 from app.config import settings
@@ -20,13 +21,6 @@ async def prepare_database():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
-
-
-# @pytest.fixture(scope="module")
-# def event_loop(request):
-#     loop = asyncio.get_event_loop_policy().new_event_loop()
-#     yield loop
-#     loop.close()
 
 
 @pytest.fixture(scope="function")
@@ -49,30 +43,81 @@ async def save_data() -> dict[str, Any]:
 
 
 @pytest.fixture(scope="session")
-async def get_mock_menu() -> Menu:
+async def create_mock_menus():
+    """
+    Создание Разделов Меню для тестов.
+    Первый объект Меню будет использоваться дл последующего создания Подменю и Блюд.
+    Второй объект Меню будет использоваться для тестирования удаления
+    """
     async with async_session_maker() as session:
-        mock_menu = Menu(
-            title="Mock menu 1 title", description="Mock menu 1 description"
+        session.add_all(
+            [
+                Menu(title="Mock menu 1 title", description="Mock menu 1 description"),
+                Menu(title="Mock menu 2 title", description="Mock menu 2 description"),
+            ]
         )
-        session.add(mock_menu)
         await session.commit()
-        await session.refresh(mock_menu)
-        return mock_menu
 
 
 @pytest.fixture(scope="session")
-async def get_mock_submenu(get_mock_menu) -> Submenu:
+async def get_mock_menu(create_mock_menus) -> Menu:
+    """Получение 1-го пункта меню"""
     async with async_session_maker() as session:
-        logger.debug(f"{get_mock_menu.title=}")
-        mock_submenu = Submenu(
-            title="Mock submenu 1 title",
-            description="Mock submenu 1 description",
-            menu_id=get_mock_menu.id,
+        stmt = select(Menu).filter_by(title="Mock menu 1 title")
+        mock_menu = await session.execute(stmt)
+    return mock_menu.scalar_one_or_none()
+
+
+@pytest.fixture(scope="session")
+async def get_mock_menu_for_test_delete(create_mock_menus) -> Menu:
+    """Получение второго пункта меню"""
+    async with async_session_maker() as session:
+        stmt = select(Menu).filter_by(title="Mock menu 2 title")
+        mock_menu_for_delete = await session.execute(stmt)
+    return mock_menu_for_delete.scalar_one_or_none()
+
+
+@pytest.fixture(scope="session")
+async def create_mock_submenus(get_mock_menu):
+    """
+    Создание Разделов Подменю для тестов.
+    Первый объект Подменю будет использоваться дл последующего создания Блюд.
+    Второй объект Подменю будет использоваться для тестирования удаления
+    """
+    async with async_session_maker() as session:
+        session.add_all(
+            [
+                Submenu(
+                    title="Mock submenu 1 title",
+                    description="Mock submenu 1 description",
+                    menu_id=get_mock_menu.id,
+                ),
+                Submenu(
+                    title="Mock submenu 2 title",
+                    description="Mock submenu 2 description",
+                    menu_id=get_mock_menu.id,
+                ),
+            ]
         )
-        session.add(mock_submenu)
         await session.commit()
-        await session.refresh(mock_submenu)
-        return mock_submenu
+
+
+@pytest.fixture(scope="session")
+async def get_mock_submenu(create_mock_submenus) -> Submenu:
+    """Получение первого Подменю"""
+    async with async_session_maker() as session:
+        stmt = select(Submenu).filter_by(title="Mock submenu 1 title")
+        mock_submenu = await session.execute(stmt)
+    return mock_submenu.scalar_one_or_none()
+
+
+@pytest.fixture(scope="session")
+async def get_mock_submenu_for_test_delete(create_mock_submenus) -> Submenu:
+    """Получение второго Подменю, для тестирования удаления"""
+    async with async_session_maker() as session:
+        stmt = select(Submenu).filter_by(title="Mock submenu 2 title")
+        mock_submenu_for_delete = await session.execute(stmt)
+    return mock_submenu_for_delete.scalar_one_or_none()
 
 
 @pytest.fixture(scope="session")

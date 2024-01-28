@@ -37,11 +37,16 @@ async def test_update_menu(ac: AsyncClient, get_mock_menu, get_mock_submenu):
     assert response.json()["title"] == "Updated Submenu 1 title"
     assert response.json()["description"] == "Updated Submenu 1 description"
 
-@pytest.mark.skip
-async def test_delete_menu(ac: AsyncClient, get_mock_menu, get_mock_submenu):
+
+async def test_delete_menu(ac: AsyncClient, get_mock_menu, get_mock_submenu_for_test_delete):
     response = await ac.delete(
-        f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}"
+        f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu_for_test_delete.id}"
     )
     assert response.status_code == 200, "Удаление подменю не выполнено"
     assert response.json()["status"] == "true"
     assert response.json()["message"] == "The submenu has been deleted"
+
+
+async def test_get_removed_submenu(ac: AsyncClient, get_mock_menu, get_mock_submenu_for_test_delete):
+    response = await ac.get(f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu_for_test_delete.id}")
+    assert response.status_code == 404, "Подменю, которое должно было быть удалено, все еще существует"
