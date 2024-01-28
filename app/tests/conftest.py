@@ -1,7 +1,4 @@
-import asyncio
-from typing import Any
 from httpx import AsyncClient
-from loguru import logger
 import pytest
 from sqlalchemy import select
 
@@ -33,13 +30,6 @@ async def ac():
 async def session_for_test():
     async with async_session_maker() as session:
         yield session
-
-
-# Remove if unuse
-@pytest.fixture(scope="module")
-async def save_data() -> dict[str, Any]:
-    data = {}
-    return data
 
 
 @pytest.fixture(scope="session")
