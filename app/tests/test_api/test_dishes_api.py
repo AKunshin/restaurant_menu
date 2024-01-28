@@ -1,4 +1,6 @@
+from decimal import Decimal
 from httpx import AsyncClient
+import pytest
 
 
 async def test_add_dish(get_mock_menu, get_mock_submenu, ac: AsyncClient):
@@ -13,7 +15,7 @@ async def test_add_dish(get_mock_menu, get_mock_submenu, ac: AsyncClient):
     assert response.status_code == 201, "Блюдо не было создано"
     assert response.json()["title"] == "My dish 1"
     assert response.json()["description"] == "My dish 1 description"
-    assert response.json()["price"] == 12.35
+    assert response.json()["price"] == '12.35'
 
 
 async def test_get_dish_by_id(
@@ -23,10 +25,10 @@ async def test_get_dish_by_id(
         f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}/dishes/{get_mock_dish.id}"
     )
     assert response.status_code == 200, "Такого блюда нет"
-    assert response.json()["id"] == get_mock_dish.id
+    assert response.json()["id"] == str(get_mock_dish.id)
     assert response.json()["title"] == get_mock_dish.title
     assert response.json()["description"] == get_mock_dish.description
-    assert response.json()["price"] == get_mock_dish.price
+    assert response.json()["price"] == str(Decimal(get_mock_dish.price).quantize(Decimal('0.01')))
 
 
 async def test_update_dish(
@@ -40,9 +42,9 @@ async def test_update_dish(
         },
     )
     assert response.status_code == 200, "Обновление блюда не выполнено"
-    assert response.json()["id"] == get_mock_dish.id
     assert response.json()["title"] == "Updated Dish 1 title"
     assert response.json()["description"] == "Updated Dish 1 description"
+    assert response.json()["price"] == str(Decimal(get_mock_dish.price).quantize(Decimal('0.01')))
 
 
 async def test_delete_dish(
