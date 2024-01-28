@@ -1,6 +1,5 @@
 from decimal import Decimal
 from httpx import AsyncClient
-import pytest
 
 
 async def test_add_dish(get_mock_menu, get_mock_submenu, ac: AsyncClient):

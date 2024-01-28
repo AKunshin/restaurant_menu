@@ -9,6 +9,8 @@ if settings.MODE == "TEST":
     DATABASE_PARAMS = {"poolclass": NullPool}
 else:
     DATABASE_URL = settings.database_url
+
+    # TODO Only for debugging! Remove before Prod!
     DATABASE_PARAMS = {"echo": True}
 
 engine = create_async_engine(url=DATABASE_URL, **DATABASE_PARAMS)

@@ -6,10 +6,20 @@ from app.menu.dependencies import get_menu
 from app.menu.models import Menu
 from app.menu.schemas import SMenuCreate, SMenu, SMenuUpdatePartial
 
+from app.menu.utils import get_menu_with_counts
+
+
+
 router = APIRouter(
     prefix="/menus",
     tags=["Меню"],
 )
+
+@router.get("/test/{target_menu_id}",
+            )
+async def get_menu_with_sd(target_menu_id):
+    result = await get_menu_with_counts(target_menu_id)
+    return result
 
 
 @router.get("", response_model=list[SMenu])
