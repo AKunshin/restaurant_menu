@@ -1,5 +1,6 @@
 from sqlalchemy import Integer, distinct, func, select, join, cast
 
+
 from app.database import async_session_maker
 from app.dao.base import BaseDAO
 from app.menu.models import Menu
