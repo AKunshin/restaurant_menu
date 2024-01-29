@@ -21,7 +21,7 @@ class SMenuUpdatePartial(SMenuCreate):
 
 class SMenu(SMenuBase):
     id: UUID4
-    submenus_count: int = 0
-    dishes_count: int = 0
+    submenus_count: int | None = 0
+    dishes_count: int |None = 0
 
     model_config = ConfigDict(from_attributes=True)

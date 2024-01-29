@@ -2,12 +2,9 @@ from fastapi import APIRouter, Depends, status
 
 
 from app.menu.dao import MenuDAO
-from app.menu.dependencies import get_menu
+from app.menu.dependencies import get_menu, get_menu_by_one_select
 from app.menu.models import Menu
 from app.menu.schemas import SMenuCreate, SMenu, SMenuUpdatePartial
-
-from app.menu.utils import get_menu_with_counts
-
 
 
 router = APIRouter(
@@ -15,11 +12,9 @@ router = APIRouter(
     tags=["Меню"],
 )
 
-@router.get("/test/{target_menu_id}",
-            )
-async def get_menu_with_sd(target_menu_id):
-    result = await get_menu_with_counts(target_menu_id)
-    return result
+@router.get("/test/{target_menu_id}", response_model = SMenu)
+async def get_menu_with_counters(menu: Menu = Depends(get_menu_by_one_select)):
+    return menu
 
 
 @router.get("", response_model=list[SMenu])

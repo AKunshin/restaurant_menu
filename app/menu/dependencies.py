@@ -12,3 +12,11 @@ async def get_menu(target_menu_id: Annotated[UUID4, Path]) -> Menu:
     if menu is not None:
         return menu
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="menu not found")
+
+
+async def get_menu_by_one_select(target_menu_id: Annotated[UUID4, Path]) -> Menu:
+    """Получение определенного меню"""
+    menu = await MenuDAO.get_all_menu_fields_by_id(id=target_menu_id)
+    if menu is not None:
+        return menu
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="menu not found")
