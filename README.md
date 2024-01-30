@@ -117,7 +117,7 @@ http://localhost:8000/api/v1/docs
 Для запуска контейнеров для тестирования выполните следующие команды:
 ```
 docker compose -f docker-compose.test.yml build
-docker compose -f docker-compose.test.yml up -d
+docker compose -f docker-compose.test.yml up
 ```
 ##### Остановка docker:
 -------
