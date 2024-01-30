@@ -1,5 +1,22 @@
 # Задание:
 -------
+Для корректной работы всего проекта, необходимо создать .env файл и заполнить его своими данными по образцу:
+```
+MODE=DEV
+# Указать режим работы DEV, TEST, PROD
+
+DB_HOST=db_host_name
+DB_PORT=db_port
+DB_USER=db_username
+DB_NAME=db_name
+DB_PASS=db_user_password
+
+TEST_DB_HOST=localhost
+TEST_DB_PORT=5432
+TEST_DB_USER=restaurant_user
+TEST_DB_NAME=test_restaurant_db
+TEST_DB_PASS=pass
+```
 # Задание 1
 <details>
 Написать проект на FastAPI с использованием PostgreSQL в качестве БД. В проекте следует реализовать REST API по работе с меню ресторана, все CRUD операции.
@@ -112,7 +129,7 @@ docker compose stop
 app/menu/routers.py
 @router.get("/test/{target_menu_id}")
 ```
-Сам запрос находится app/menu/MenuDAO.py с следующем методе:
+Сам запрос SqlAlchemyORM находится app/menu/MenuDAO.py в следующем методе:
 ```
 async def get_all_menu_fields_by_id(cls, id=id):
 ```
