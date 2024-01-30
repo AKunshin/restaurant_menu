@@ -1,3 +1,4 @@
+from typing import Any
 from httpx import AsyncClient
 import pytest
 from sqlalchemy import select
@@ -123,3 +124,9 @@ async def get_mock_dish(get_mock_submenu) -> Dish:
         await session.commit()
         await session.refresh(mock_dish)
         return mock_dish
+
+
+@pytest.fixture(scope="module")
+async def save_data() -> dict[str, Any]:
+    """Фикстура для сохранения данных в интеграционных тестах"""
+    return {}
