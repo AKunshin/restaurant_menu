@@ -24,13 +24,16 @@ services:
           "-d",
           "${DB_NAME}"
         ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
 
   backend_test:
     build:
       context: .
     container_name: backend_test
-    restart: "unless-stopped"
-    command: ["pytest", "-v", "-s"]
+    network_mode: host
+    command: ["pytest", "-v"]
     volumes:
       - .:/app
     ports:

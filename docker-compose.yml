@@ -24,6 +24,9 @@ services:
           "-d",
           "${DB_NAME}"
         ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
 
   backend:
     build:
@@ -36,6 +39,7 @@ services:
       - .:/app
     ports:
       - 8000:8000
+    network_mode: host
     depends_on:
       ylab_db:
         condition: service_healthy
