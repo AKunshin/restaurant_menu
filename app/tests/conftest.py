@@ -1,6 +1,7 @@
-from typing import Any
-from httpx import AsyncClient
 import pytest
+from typing import Any, Generator
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.main import app as fastapi_app
@@ -22,13 +23,13 @@ async def prepare_database():
 
 
 @pytest.fixture(scope="function")
-async def ac():
+async def ac() -> Generator[AsyncClient, Any, None]:
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
         yield ac
 
 
 @pytest.fixture(scope="function")
-async def session_for_test():
+async def session_for_test() -> Generator[AsyncSession, Any, None]:
     async with async_session_maker() as session:
         yield session
 
@@ -113,6 +114,7 @@ async def get_mock_submenu_for_test_delete(create_mock_submenus) -> Submenu:
 
 @pytest.fixture(scope="session")
 async def get_mock_dish(get_mock_submenu) -> Dish:
+    """Создание блюда"""
     async with async_session_maker() as session:
         mock_dish = Dish(
             title="Mock dish 1 title",

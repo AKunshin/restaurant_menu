@@ -1,7 +1,8 @@
+from typing import Any
 from httpx import AsyncClient
 
 
-async def test_add_menu(ac: AsyncClient, save_data):
+async def test_add_menu(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.post(
         "/menus",
         json={
@@ -16,7 +17,7 @@ async def test_add_menu(ac: AsyncClient, save_data):
     save_data["menu_id"] = response.json()["id"]
 
 
-async def test_add_submenu(ac: AsyncClient, save_data):
+async def test_add_submenu(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.post(
         f"/menus/{save_data['menu_id']}/submenus",
         json={
@@ -31,7 +32,7 @@ async def test_add_submenu(ac: AsyncClient, save_data):
     save_data["submenu_id"] = response.json()["id"]
 
 
-async def test_add_dish(ac: AsyncClient, save_data):
+async def test_add_dish(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.post(
         f"/menus/{save_data['menu_id']}/submenus/{save_data['submenu_id']}/dishes",
         json={
@@ -47,7 +48,7 @@ async def test_add_dish(ac: AsyncClient, save_data):
     save_data["first_dish_id"] = response.json()["id"]
 
 
-async def test_add_second_dish(ac: AsyncClient, save_data):
+async def test_add_second_dish(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.post(
         f"/menus/{save_data['menu_id']}/submenus/{save_data['submenu_id']}/dishes",
         json={
@@ -63,7 +64,7 @@ async def test_add_second_dish(ac: AsyncClient, save_data):
     save_data["second_dish_id"] = response.json()["id"]
 
 
-async def test_get_menu_by_id(ac: AsyncClient, save_data):
+async def test_get_menu_by_id(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.get(f"/menus/{save_data['menu_id']}")
     assert response.status_code == 200, "Такого меню нет"
     assert response.json()["id"] == str(save_data["menu_id"])
@@ -73,7 +74,7 @@ async def test_get_menu_by_id(ac: AsyncClient, save_data):
     assert response.json()["dishes_count"] == 2
 
 
-async def test_get_submenu_by_id(ac: AsyncClient, save_data):
+async def test_get_submenu_by_id(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.get(
         f"/menus/{save_data['menu_id']}/submenus/{save_data['submenu_id']}"
     )
@@ -83,7 +84,7 @@ async def test_get_submenu_by_id(ac: AsyncClient, save_data):
     assert response.json()["description"] == "Submenu 1 description"
 
 
-async def test_delete_submenu(ac: AsyncClient, save_data):
+async def test_delete_submenu(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.delete(
         f"/menus/{save_data['menu_id']}/submenus/{save_data['submenu_id']}"
     )
@@ -92,13 +93,13 @@ async def test_delete_submenu(ac: AsyncClient, save_data):
     assert response.json()["message"] == "The submenu has been deleted"
 
 
-async def test_get_submenu_list(ac: AsyncClient, save_data):
+async def test_get_submenu_list(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.get(f"/menus/{save_data['menu_id']}/submenus")
     assert response.status_code == 200
     assert response.json() == []
 
 
-async def test_get_dishes_list(ac: AsyncClient, save_data):
+async def test_get_dishes_list(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.get(
         f"/menus/{save_data['menu_id']}/submenus/{save_data['submenu_id']}/dishes"
     )
@@ -106,7 +107,7 @@ async def test_get_dishes_list(ac: AsyncClient, save_data):
     assert response.json() == []
 
 
-async def test_get_menu_after_remove_sd(ac: AsyncClient, save_data):
+async def test_get_menu_after_remove_sd(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.get(f"/menus/{save_data['menu_id']}")
     assert response.status_code == 200, "Такого меню нет"
     assert response.json()["id"] == str(save_data["menu_id"])
@@ -116,7 +117,7 @@ async def test_get_menu_after_remove_sd(ac: AsyncClient, save_data):
     assert response.json()["dishes_count"] == 0
 
 
-async def test_delete_menu(ac: AsyncClient, save_data):
+async def test_delete_menu(ac: AsyncClient, save_data: dict[str, Any]):
     response = await ac.delete(f"/menus/{save_data['menu_id']}")
     assert response.status_code == 200, "Удаление меню не выполнено"
     assert response.json()["status"] == "true"

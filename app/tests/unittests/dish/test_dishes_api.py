@@ -1,8 +1,14 @@
 from decimal import Decimal
 from httpx import AsyncClient
 
+from app.menu.models import Menu
+from app.submenu.models import Submenu
+from app.dish.models import Dish
 
-async def test_add_dish(get_mock_menu, get_mock_submenu, ac: AsyncClient):
+
+async def test_add_dish(
+    get_mock_menu: Menu, get_mock_submenu: Submenu, ac: AsyncClient
+):
     response = await ac.post(
         f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}/dishes",
         json={
@@ -14,11 +20,11 @@ async def test_add_dish(get_mock_menu, get_mock_submenu, ac: AsyncClient):
     assert response.status_code == 201, "Блюдо не было создано"
     assert response.json()["title"] == "My dish 1"
     assert response.json()["description"] == "My dish 1 description"
-    assert response.json()["price"] == '12.35'
+    assert response.json()["price"] == "12.35"
 
 
 async def test_get_dish_by_id(
-    ac: AsyncClient, get_mock_menu, get_mock_submenu, get_mock_dish
+    ac: AsyncClient, get_mock_menu: Menu, get_mock_submenu: Submenu, get_mock_dish: Dish
 ):
     response = await ac.get(
         f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}/dishes/{get_mock_dish.id}"
@@ -27,11 +33,13 @@ async def test_get_dish_by_id(
     assert response.json()["id"] == str(get_mock_dish.id)
     assert response.json()["title"] == get_mock_dish.title
     assert response.json()["description"] == get_mock_dish.description
-    assert response.json()["price"] == str(Decimal(get_mock_dish.price).quantize(Decimal('0.01')))
+    assert response.json()["price"] == str(
+        Decimal(get_mock_dish.price).quantize(Decimal("0.01"))
+    )
 
 
 async def test_update_dish(
-    ac: AsyncClient, get_mock_menu, get_mock_submenu, get_mock_dish
+    ac: AsyncClient, get_mock_menu: Menu, get_mock_submenu: Submenu, get_mock_dish: Dish
 ):
     response = await ac.patch(
         f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}/dishes/{get_mock_dish.id}",
@@ -43,11 +51,13 @@ async def test_update_dish(
     assert response.status_code == 200, "Обновление блюда не выполнено"
     assert response.json()["title"] == "Updated Dish 1 title"
     assert response.json()["description"] == "Updated Dish 1 description"
-    assert response.json()["price"] == str(Decimal(get_mock_dish.price).quantize(Decimal('0.01')))
+    assert response.json()["price"] == str(
+        Decimal(get_mock_dish.price).quantize(Decimal("0.01"))
+    )
 
 
 async def test_delete_dish(
-    ac: AsyncClient, get_mock_menu, get_mock_submenu, get_mock_dish
+    ac: AsyncClient, get_mock_menu: Menu, get_mock_submenu: Submenu, get_mock_dish: Dish
 ):
     response = await ac.delete(
         f"/menus/{get_mock_menu.id}/submenus/{get_mock_submenu.id}/dishes/{get_mock_dish.id}"
