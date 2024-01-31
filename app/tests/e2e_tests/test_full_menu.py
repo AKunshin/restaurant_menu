@@ -1,6 +1,4 @@
 from httpx import AsyncClient
-from loguru import logger
-import pytest
 
 
 async def test_add_menu(ac: AsyncClient, save_data):

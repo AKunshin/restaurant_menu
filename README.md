@@ -5,13 +5,13 @@
 MODE=DEV
 # Указать режим работы DEV, TEST, PROD
 
-DB_HOST=db_host_name
+DB_HOST=db_name
 DB_PORT=db_port
 DB_USER=db_username
 DB_NAME=db_name
 DB_PASS=db_user_password
 
-TEST_DB_HOST=localhost
+TEST_DB_HOST=test_db
 TEST_DB_PORT=5432
 TEST_DB_USER=restaurant_user
 TEST_DB_NAME=test_restaurant_db

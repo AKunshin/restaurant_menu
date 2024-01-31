@@ -39,7 +39,6 @@ services:
       - .:/app
     ports:
       - 8000:8000
-    network_mode: host
     depends_on:
       ylab_db:
         condition: service_healthy

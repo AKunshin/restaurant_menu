@@ -1,9 +1,9 @@
 version: "3.8"
 
 services:
-  ylab_db_test:
-    container_name: ylab_db_test
-    hostname: ylab_db_test
+  test_db:
+    container_name: test_db
+    hostname: test_db
     image: postgres:15.1-alpine
     restart: "unless-stopped"
     ports:
@@ -20,9 +20,9 @@ services:
           "CMD-SHELL",
           "pg_isready",
           "-U",
-          "${DB_USER}",
+          "${TEST_DB_USER}",
           "-d",
-          "${DB_NAME}"
+          "${TEST_DB_NAME}"
         ]
       interval: 10s
       timeout: 30s
@@ -32,14 +32,13 @@ services:
     build:
       context: .
     container_name: backend_test
-    network_mode: host
     command: ["pytest", "-v"]
     volumes:
       - .:/app
     ports:
       - 8000:8000
     depends_on:
-      ylab_db_test:
+      test_db:
         condition: service_healthy
 
 volumes:
