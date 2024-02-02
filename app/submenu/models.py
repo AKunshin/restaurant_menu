@@ -13,9 +13,11 @@ class Submenu(Base):
     title = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
     dishes_count = column_property(
-        select(func.count(Dish.id)).where(Dish.submenu_id == id).scalar_subquery()
+        select(func.count(Dish.id)).where(Dish.submenu_id == id)
     )
     menu_id = Column(UUID, ForeignKey("menus.id"))
 
     menu = relationship("Menu", back_populates="submenus")
-    dishes = relationship("Dish", cascade="all, delete-orphan", back_populates="submenu")
+    dishes = relationship(
+        "Dish", cascade="all, delete-orphan", back_populates="submenu"
+    )

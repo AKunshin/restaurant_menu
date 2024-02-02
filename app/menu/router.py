@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status
+from loguru import logger
 
 
 from app.menu.dao import MenuDAO
@@ -12,7 +13,9 @@ router = APIRouter(
     tags=["Меню"],
 )
 
-@router.get("/test/{target_menu_id}", response_model = SMenu)
+@router.get("/test/{target_menu_id}",
+            #  response_model = SMenu
+             )
 async def get_menu_with_counters(menu: Menu = Depends(get_menu_by_one_select)):
     return menu
 
